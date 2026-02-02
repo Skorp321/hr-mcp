@@ -3,6 +3,18 @@
 import os
 from typing import List
 
+# Инициализация Phoenix трейсинга (должна быть до импорта LangChain)
+from phoenix.otel import register
+from openinference.instrumentation.langchain import LangChainInstrumentor
+
+# Настройка Phoenix трейсинга
+phoenix_endpoint = os.environ.get("PHOENIX_COLLECTOR_ENDPOINT", "http://localhost:4317")
+tracer_provider = register(
+    project_name="hr-agent",
+    endpoint=phoenix_endpoint,
+)
+LangChainInstrumentor().instrument(tracer_provider=tracer_provider)
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel

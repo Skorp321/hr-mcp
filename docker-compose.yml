@@ -1,4 +1,16 @@
 services:
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    container_name: phoenix
+    ports:
+      - "6006:6006"  # Phoenix UI
+      - "4317:4317"  # OTLP gRPC
+      - "4318:4318"  # OTLP HTTP
+    environment:
+      - PHOENIX_WORKING_DIR=/phoenix
+    volumes:
+      - phoenix_data:/phoenix
+
   mcp:
     build: ./mcp
     ports:
@@ -21,9 +33,13 @@ services:
     environment:
       MCP_HR_URL: http://mcp:8000/mcp
       OPENAI_API_KEY: ${API_KEY}
+      PHOENIX_COLLECTOR_ENDPOINT: http://phoenix:4317
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://phoenix:4317
     depends_on:
       mcp:
         condition: service_healthy
+      phoenix:
+        condition: service_started
 
   frontend:
     build: ./agent/frontend
@@ -31,3 +47,6 @@ services:
       - "3000:80"
     depends_on:
       - agent-api
+
+volumes:
+  phoenix_data:
