@@ -34,42 +34,8 @@ RAG использует семантический поиск по ключев
 ## Запуск
 
 ```bash
-uv run --with mcp python server.py
-# или с venv: python server.py
+MCP_TRANSPORT=http uv run --with mcp python server.py
+# или с venv: MCP_TRANSPORT=http python server.py
 ```
-
-Сервер по умолчанию работает через stdio (стандартный ввод/вывод) — подходит для Cursor/IDE.
 
 **Общение через curl (HTTP):** запустите с `MCP_TRANSPORT=http`, затем используйте примеры из [CURL.md](CURL.md).
-
-## Настройка в Cursor
-
-Добавьте в `~/.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "hr-server": {
-      "command": "/path/to/MCP-hr/venv/bin/python",
-      "args": ["/path/to/MCP-hr/server.py"],
-      "cwd": "/path/to/MCP-hr"
-    }
-  }
-}
-```
-
-Или с `uv`:
-
-```json
-{
-  "mcpServers": {
-    "hr-server": {
-      "command": "uv",
-      "args": ["run", "--with", "mcp", "server.py"],
-      "cwd": "/path/to/MCP-hr"
-    }
-  }
-}
-```
-
-Замените `/path/to/MCP-hr` на фактический путь к проекту.
