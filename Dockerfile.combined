@@ -1,0 +1,23 @@
+# MCP + agent-api в одном контейнере (127.0.0.1 для MCP)
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# MCP
+COPY mcp/ /mcp/
+RUN pip install --no-cache-dir -r /mcp/requirements.txt
+
+# Agent
+COPY agent/backend/ /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN echo '#!/bin/bash\n\
+cd /mcp && MCP_TRANSPORT=http python server.py &\n\
+sleep 6\n\
+export MCP_HR_URL=http://127.0.0.1:8000/mcp\n\
+exec uvicorn main:app --host 0.0.0.0 --port 8001\n\
+' > /start.sh && chmod +x /start.sh
+
+EXPOSE 8001
+
+CMD ["/start.sh"]

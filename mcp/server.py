@@ -111,8 +111,29 @@ def main():
     import os
     transport = os.environ.get("MCP_TRANSPORT", "stdio")
     if transport == "http":
-        # Для общения через curl: MCP_TRANSPORT=http python server.py
-        mcp.run(transport="streamable-http")
+        import uvicorn
+
+        app = mcp.streamable_http_app()
+
+        # ASGI middleware: подмена Host для запросов из Docker (mcp:8000)
+        def fix_host_middleware(asgi_app):
+            async def wrapper(scope, receive, send):
+                if scope["type"] == "http":
+                    headers = list(scope.get("headers", []))
+                    for i, (k, v) in enumerate(headers):
+                        if k == b"host" and v.lower() in (b"mcp:8000", b"mcp", b"mcp:80"):
+                            headers[i] = (b"host", b"localhost:8000")
+                            break
+                    scope["headers"] = headers
+                await asgi_app(scope, receive, send)
+            return wrapper
+
+        app = fix_host_middleware(app)
+        uvicorn.run(
+            app, host="0.0.0.0", port=8000,
+            ws="none",  # только HTTP
+            log_level="info",
+        )
     else:
         mcp.run(transport="stdio")
 

@@ -1,37 +1,27 @@
-# MCP HR Server
+# MCP HR Server + Agent
 
-MCP-сервер на Python с RAG и инструментами для HR-данных.
+MCP-сервер на Python с RAG и инструментами для HR-данных. React-агент на LangGraph.
 
-## Инструменты
+## Структура
+
+| Папка | Описание |
+|-------|----------|
+| `mcp/` | MCP HR сервер (RAG, персональные дни, отпуска) |
+| `agent/` | LangGraph агент + React UI |
+
+## MCP сервер (mcp/)
+
+### Инструменты
 
 | Инструмент | Описание |
 |------------|----------|
-| `hr_rag_search` | RAG-поиск по HR-документам (политики отпусков, больничные, командировки и т.д.) |
-| `get_personal_days_tool` | Персональные дни сотрудников (дни рождения, годовщины) |
+| `hr_rag_search` | RAG-поиск по HR-документам |
+| `get_personal_days_tool` | Персональные дни сотрудников |
 | `get_remaining_vacation_days_tool` | Оставшиеся дни отпуска |
 
-Данные по персональным дням и отпускам — моковые. Логины: ivanov, petrova, sidorov.
+Логины: ivanov, petrova, sidorov.
 
-## Установка
-
-**Вариант 1 (uv):**
-```bash
-cd MCP-hr
-uv run --with mcp python server.py
-```
-
-**Вариант 2 (venv + pip):**
-```bash
-cd MCP-hr
-python3 -m venv venv
-source venv/bin/activate   # Linux/macOS
-pip install -r requirements.txt
-python server.py
-```
-
-RAG использует семантический поиск по ключевым словам (без внешних ML-моделей).
-
-## Запуск
+### Запуск MCP
 
 ```bash
 MCP_TRANSPORT=http uv run --with mcp python server.py

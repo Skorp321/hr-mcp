@@ -1,0 +1,33 @@
+services:
+  mcp:
+    build: ./mcp
+    ports:
+      - "8000:8000"
+    environment:
+      MCP_TRANSPORT: http
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.settimeout(2); s.connect(('127.0.0.1', 8000)); s.close()"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  agent-api:
+    build: ./agent/backend
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+    environment:
+      MCP_HR_URL: http://mcp:8000/mcp
+      OPENAI_API_KEY: ${API_KEY}
+    depends_on:
+      mcp:
+        condition: service_healthy
+
+  frontend:
+    build: ./agent/frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - agent-api

@@ -3,8 +3,8 @@
 Сервер по умолчанию работает через **stdio** (для Cursor). Чтобы обращаться к нему по HTTP и использовать curl, запустите с транспортом **http**:
 
 ```bash
+cd mcp
 MCP_TRANSPORT=http uv run --with mcp python server.py
-# или: MCP_TRANSPORT=http python server.py
 ```
 
 Сервер будет доступен по адресу: **http://127.0.0.1:8000/mcp**
