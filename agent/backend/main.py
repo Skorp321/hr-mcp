@@ -7,8 +7,10 @@ from typing import List
 from phoenix.otel import register
 from openinference.instrumentation.langchain import LangChainInstrumentor
 
-# Настройка Phoenix трейсинга
+# Настройка Phoenix трейсинга (порт 4317 — OTLP gRPC, 6006 — UI)
 phoenix_endpoint = os.environ.get("PHOENIX_COLLECTOR_ENDPOINT", "http://localhost:4317")
+if "OTEL_EXPORTER_OTLP_ENDPOINT" not in os.environ:
+    os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = phoenix_endpoint
 tracer_provider = register(
     project_name="hr-agent",
     endpoint=phoenix_endpoint,

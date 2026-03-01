@@ -30,6 +30,9 @@ docker-compose up --build
 - Вызовы инструментов (MCP tools)
 - Цепочки выполнения (traces)
 
+**Порты:** коллектор OTLP gRPC — `4317`, веб-интерфейс — http://localhost:6006.  
+При локальном запуске агента трейсы уходят на `localhost:4317` (переменная `PHOENIX_COLLECTOR_ENDPOINT` в `.env` или по умолчанию).
+
 ## MCP сервер (mcp/)
 
 ### Инструменты
